@@ -57,41 +57,33 @@ class NiconicoMylist{
 			$items = array_reverse($items);
 		}
 
-		// マイリスト用の埋め込み表示
-		if($top) $html .= '
-			<div>
-			<iframe width="312" height="176" src="http://ext.nicovideo.jp/thumb_mylist/'. $id .'" scrolling="no" style="border:solid 1px #CCC;" frameborder="0">
-			<a href="http://www.nicovideo.jp/mylist/'. $id .'">【ニコニコ動画】</a>
-			</iframe>
-			</div>
-			<br><br>
-		';
+		// マイリスト用の埋め込み取得
+		if($top) $html .= $this->get_contents("shortCodeNicomy2.html", array("id" => $id));
 
 		// 動画を表示する
 		foreach ($items as $key => $item) {
 			if($limit>0){
 
-				$html .= '
-					<div style="text-align:center;">
-					<script type="text/javascript" src="'.$item["player_link"].'"></script>
-					<noscript><a href="'. $item["link"] .'">'.$item["title"] .'</a></noscript>
-					</div>
-					<br><br>
-				';
+				$html .= $this->get_contents("shortCodeNicomy1.html", array("item" => $item));
 
 				$limit--;
 			}
 		}
 
-		// マイリスト用の埋め込み表示
-		if($bottom) $html .= '
-			<div>
-			<iframe width="312" height="176" src="http://ext.nicovideo.jp/thumb_mylist/'. $id .'" scrolling="no" style="border:solid 1px #CCC;" frameborder="0">
-			<a href="http://www.nicovideo.jp/mylist/'. $id .'">【ニコニコ動画】</a>
-			</iframe>
-			</div>
-			<br><br>
-		';
+		// マイリスト用の埋め込み取得
+		if($top) $html .= $this->get_contents("shortCodeNicomy2.html", array("id" => $id));
+
+		return $html;
+	}
+
+	// requireをして取得した文字列を返す。
+	function get_contents($file, $data){
+		extract($data);
+
+		ob_start();
+		require($file);
+		$html = ob_get_contents();
+		ob_end_clean();
 
 		return $html;
 	}
