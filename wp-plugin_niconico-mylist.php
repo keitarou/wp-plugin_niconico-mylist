@@ -35,6 +35,8 @@ class NiconicoMylist{
 			"bottom" => true
 		), $params));
 
+		$html = "";
+
 		// フィードの取得
 		$url = str_replace("xxxxxidxxxxx", $id, $this->baseurl);
 		$rss = get_object_vars(simplexml_load_file($url));
@@ -56,19 +58,42 @@ class NiconicoMylist{
 		}
 
 		// マイリスト用の埋め込み表示
-		if($top) require "shortCodeNicomy2.html";
+		if($top) $html .= '
+			<div>
+			<iframe width="312" height="176" src="http://ext.nicovideo.jp/thumb_mylist/'. $id .'" scrolling="no" style="border:solid 1px #CCC;" frameborder="0">
+			<a href="http://www.nicovideo.jp/mylist/'. $id .'">【ニコニコ動画】</a>
+			</iframe>
+			</div>
+			<br><br>
+		';
 
 		// 動画を表示する
 		foreach ($items as $key => $item) {
 			if($limit>0){
-				require "shortCodeNicomy1.html";
+
+				$html .= '
+					<div style="text-align:center;">
+					<script type="text/javascript" src="'.$item["player_link"].'"></script>
+					<noscript><a href="'. $item["link"] .'">'.$item["title"] .'</a></noscript>
+					</div>
+					<br><br>
+				';
+
 				$limit--;
 			}
 		}
 
 		// マイリスト用の埋め込み表示
-		if($bottom) require "shortCodeNicomy2.html";
+		if($bottom) $html .= '
+			<div>
+			<iframe width="312" height="176" src="http://ext.nicovideo.jp/thumb_mylist/'. $id .'" scrolling="no" style="border:solid 1px #CCC;" frameborder="0">
+			<a href="http://www.nicovideo.jp/mylist/'. $id .'">【ニコニコ動画】</a>
+			</iframe>
+			</div>
+			<br><br>
+		';
 
-		return "";
+		return $html;
 	}
+
 }
